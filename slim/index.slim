@@ -1,5 +1,5 @@
 doctype html
-html lang="en" ng-app="ginsburg"
+html lang="en" ng-app=""
 head
   meta charset="utf-8"
   title Sleep vs Mood
@@ -11,23 +11,24 @@ body
     .graph-header.row
       .col-sm-9
         .date-range-title 
-          h2 January - Febuary
+          h2 
+            | {{ startMonth }}
+            | &nbsp;-&nbsp;
+            | {{ endMonth }}
       .col-sm-3.form-horizontal
         .form-group.date-range
+          - months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
           .col-sm-5
-            select.form-control
-              option January
-              option February
-              option March 
+            select.form-control ng-model="startMonth" value="May"
+              - months.each do |m|
+                option #{m}
           .col-sm-2
             label.control-label
               | to
           .col-sm-5
-            select.form-control
-              option January
-              option February
-              option March 
-              option April
+            select.form-control ng-model="endMonth" value="June"
+              - months.each do |m|
+                option #{m}
 
     .row
       .col-sm-9
@@ -43,4 +44,4 @@ body
               .green-to-blue-grad
               .indicator
 
-  //script src="vendor/javascripts/angular/angular.js"
+  script src="vendor/javascripts/angular/angular.js"
