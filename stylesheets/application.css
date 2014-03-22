@@ -1,2 +1,67 @@
-h1 {
-  color: red; }
+html,
+body {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  background-color: #bdc3c7;
+  color: #7f8c8d; }
+
+.main {
+  margin-top: 20px; }
+
+.graph-header {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #4e5758; }
+
+.date-range-title h2 {
+  margin: 0;
+  font-size: 3em;
+  color: #4e5758; }
+
+.form-group.date-range {
+  margin-bottom: 0; }
+
+.box {
+  background-color: #ecf0f1;
+  border: 3px solid #7f8c8d; }
+
+.graph {
+  height: 600px; }
+
+.info-section {
+  text-align: center;
+  height: 600px; }
+  .info-section .stat {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 6px; }
+  .info-section .hours-slept {
+    font-size: 5em;
+    margin: 0 auto;
+    color: #4e5758; }
+  .info-section .mood-level {
+    position: relative;
+    width: 50px;
+    height: 400px;
+    margin: 0 auto; }
+    .info-section .mood-level .green-to-blue-grad {
+      width: 100%;
+      height: 400px;
+      /* fallback/image non-cover color */
+      background-color: #b8d782;
+      /* Firefox 3.6+ */
+      background-image: -moz-linear-gradient(#b8d782, #5cb6be);
+      /* Safari 4+, Chrome 1+ */
+      background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#b8d782), to(#5cb6be));
+      /* Safari 5.1+, Chrome 10+ */
+      background-image: -webkit-linear-gradient(#b8d782, #5cb6be);
+      /* Opera 11.10+ */
+      background-image: -o-linear-gradient(#b8d782, #5cb6be);
+      border: 3px solid #7f8c8d; }
+    .info-section .mood-level .indicator {
+      width: 100%;
+      height: 4px;
+      background-color: #4e5758;
+      border-right: #7f8c8d 2px solid;
+      border-left: #7f8c8d 2px solid;
+      position: absolute;
+      top: 192px; }

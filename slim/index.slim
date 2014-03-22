@@ -1,11 +1,46 @@
-//!doctype html
+doctype html
 html lang="en" ng-app="ginsburg"
 head
   meta charset="utf-8"
   title Sleep vs Mood
+  link rel="stylesheet" href="vendor/stylesheets/bootstrap/bootstrap.css"
   link rel="stylesheet" href="stylesheets/application.css"
 
 body
-  h1 Hello World
+  .main.container
+    .graph-header.row
+      .col-sm-9
+        .date-range-title 
+          h2 January - Febuary
+      .col-sm-3.form-horizontal
+        .form-group.date-range
+          .col-sm-5
+            select.form-control
+              option January
+              option February
+              option March 
+          .col-sm-2
+            label.control-label
+              | to
+          .col-sm-5
+            select.form-control
+              option January
+              option February
+              option March 
+              option April
 
-  script src="lib/angular/angular.js"
+    .row
+      .col-sm-9
+        .box.graph
+      .col-sm-3
+        .box.info-section
+          .stat
+            label.info-title Average hours Sleep:
+            h4.hours-slept 8
+          .stat
+            label.info-title Average Mood:
+            .mood-level
+              .green-to-blue-grad
+              .indicator
+
+  //script src="vendor/javascripts/angular/angular.js"
