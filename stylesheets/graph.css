@@ -1,0 +1,12 @@
+.graph .axis path,
+.graph .axis line {
+  fill: none;
+  stroke: black;
+  shape-rendering: crispEdges; }
+.graph .x.axis path {
+  display: none; }
+.graph .line {
+  fill: none;
+  stroke: url(#sleep-gradient);
+  stroke-width: 4px;
+  opacity: 0.4; }

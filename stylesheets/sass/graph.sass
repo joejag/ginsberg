@@ -1,0 +1,17 @@
+@import 'mixins'
+
+.graph
+  .axis path,
+  .axis line 
+    fill: none
+    stroke: #000
+    shape-rendering: crispEdges
+
+  .x.axis path 
+    display: none
+
+  .line 
+    fill: none
+    stroke: url(#sleep-gradient)
+    stroke-width: 4px
+    opacity: 0.4
