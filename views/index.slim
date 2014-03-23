@@ -1,5 +1,5 @@
 doctype html
-html lang="en" ng-app=""
+html lang="en" ng-app="ginsbergApp"
 head
   meta charset="utf-8"
   title Sleep vs Mood
@@ -7,7 +7,7 @@ head
   link rel="stylesheet" href="stylesheets/application.css"
   link rel="stylesheet" href="stylesheets/graph.css"
 
-body
+body ng-controller="SleepDataController"
   .main.container
     .graph-header.row
       .col-sm-9
@@ -46,5 +46,6 @@ body
               .indicator
 
   script src="vendor/javascripts/angular/angular.js"
+  script src="javascripts/ginsberg_app.js"
   script src="vendor/javascripts/d3/d3.v3.js"
   script src="javascripts/graph.js"

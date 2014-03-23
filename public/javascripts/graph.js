@@ -1,5 +1,5 @@
 (function() {
-  var color, drawGraph, height, line, margin, moodSleepData, svg, width, x, xAxis, y, yAxis;
+  var color, drawGraph, height, isValidDate, line, margin, moodSleepData, svg, width, x, xAxis, y, yAxis;
 
   moodSleepData = [
     {
@@ -222,5 +222,12 @@
   };
 
   drawGraph();
+
+  isValidDate = function(d) {
+    if (Object.prototype.toString.call(d) !== "[object Date]") {
+      return false;
+    }
+    return !isNaN(d.getTime());
+  };
 
 }).call(this);
