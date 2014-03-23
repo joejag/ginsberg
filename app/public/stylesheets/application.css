@@ -15,10 +15,16 @@ body {
 .date-select {
   padding: 20px 0 10px 0; }
 
-.date-range-title h2 {
-  margin: 0;
-  font-size: 3em;
+.description {
   color: #4e5758; }
+  .description h1 {
+    margin-top: 0; }
+
+.title {
+  color: #4e5758; }
+  .title h2 {
+    margin: 0;
+    font-size: 3em; }
 
 .form-group.date-range {
   margin-bottom: 0; }
@@ -26,11 +32,10 @@ body {
 .box {
   background-color: #ecf0f1;
   border: 3px solid #7f8c8d;
-  min-height: 600px; }
+  min-height: 550px; }
 
 .info-section {
-  text-align: center;
-  height: 600px; }
+  text-align: center; }
   .info-section .stat {
     margin-top: 10px;
     margin-bottom: 10px;
@@ -42,11 +47,11 @@ body {
   .info-section .mood-level {
     position: relative;
     width: 50px;
-    height: 400px;
+    height: 350px;
     margin: 0 auto; }
     .info-section .mood-level .green-to-blue-grad {
       width: 100%;
-      height: 400px;
+      height: 350px;
       /* fallback/image non-cover color */
       background-color: #b8d782;
       /* Firefox 3.6+ */

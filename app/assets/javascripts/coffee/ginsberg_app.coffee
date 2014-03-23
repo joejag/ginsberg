@@ -29,7 +29,7 @@ ginsbergApp.controller "moodSleepController", ($scope, $http) ->
       $scope.redraw = ->
         drawGraph(moodSleepData) 
         $scope.averageSleep = getAverageSleep(moodSleepData)
-        height = ((400/250) * getAverageMood(moodSleepData))
+        height = ((350/250) * getAverageMood(moodSleepData))
         $scope.moodStyle = {
           top:  height+"px"
         }
@@ -47,7 +47,7 @@ margin =
   left: 40
 
 width = 800 - margin.left - margin.right
-height = 500 - margin.top - margin.bottom
+height = 450 - margin.top - margin.bottom
 
 
 x = d3.time.scale().range([

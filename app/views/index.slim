@@ -11,10 +11,15 @@ head
 body ng-controller="moodSleepController"
   .main.container
     .row
+      .col-sm-12
+        .description
+          h1.title Sleep vs. Mood
+          p Select a date range to see a graph showing the correlation between total amount of sleep and mood. Light Green dots indicate a higher mood score with colours graduating towards blue for lower mood scores. 
+    .row
       .col-sm-9
         .box
           .date-select.clearfix
-            .date-range-title.col-sm-8
+            .title.col-sm-8
               h2 
                 | {{ startDate || "01/01/2010" }}
                 | &nbsp;-&nbsp;

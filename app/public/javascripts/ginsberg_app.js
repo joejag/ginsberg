@@ -45,7 +45,7 @@
           var height;
           drawGraph(moodSleepData);
           $scope.averageSleep = getAverageSleep(moodSleepData);
-          height = (400 / 250) * getAverageMood(moodSleepData);
+          height = (350 / 250) * getAverageMood(moodSleepData);
           return $scope.moodStyle = {
             top: height + "px"
           };
@@ -70,7 +70,7 @@
 
   width = 800 - margin.left - margin.right;
 
-  height = 500 - margin.top - margin.bottom;
+  height = 450 - margin.top - margin.bottom;
 
   x = d3.time.scale().range([0, width]);
 
