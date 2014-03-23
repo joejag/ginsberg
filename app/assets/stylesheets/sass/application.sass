@@ -1,9 +1,5 @@
 @import 'mixins'
-
-$ginsbergGreen: #B8D782 
-$ginsbergBlue: #5CB6BE
-$grey: #7f8c8d
-$darkGrey: darken($grey, 20%)
+@import 'variables'
 
 html,
 body
@@ -19,6 +15,9 @@ body
   margin-bottom: 10px
   color: $darkGrey
 
+.date-select
+  padding: 20px 0 10px 0
+
 .date-range-title
   h2
     margin: 0
@@ -31,9 +30,7 @@ body
 .box
   background-color: #ecf0f1
   border: 3px solid $grey 
-
-.graph
-  height: 600px
+  min-height: 600px
 
 .info-section
   text-align: center

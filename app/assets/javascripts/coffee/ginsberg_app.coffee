@@ -41,10 +41,10 @@ isValidDate = (d) ->
         
 # based partially on http://bl.ocks.org/mbostock/3969722
 margin =
-  top: 80
+  top: 20 
   right: 20
-  bottom: 30
-  left: 80
+  bottom: 40
+  left: 40
 
 width = 800 - margin.left - margin.right
 height = 500 - margin.top - margin.bottom
@@ -187,3 +187,4 @@ getAverageMood = (moodSleepData) ->
   ,0)
   average = sum/moods.length
   Math.round(average * 100) / 100 #round to 2 decimal places
+

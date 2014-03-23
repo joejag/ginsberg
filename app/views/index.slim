@@ -5,41 +5,35 @@ head
   title Sleep vs Mood
   link rel="stylesheet" href="vendor/stylesheets/bootstrap/bootstrap.css"
   link rel="stylesheet" href="stylesheets/application.css"
+  link rel="stylesheet" href="stylesheets/kalendae.css"
   link rel="stylesheet" href="stylesheets/graph.css"
 
 body ng-controller="moodSleepController"
   .main.container
-    .graph-header.row
-      .col-sm-9
-        .date-range-title 
-          h2 
-            | {{ startMonth }}
-            | &nbsp;-&nbsp;
-            | {{ endMonth }}
-      .col-sm-3.form-horizontal
-        .form-group.date-range
-          - months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-          .col-sm-5
-            select.form-control ng-model="startMonth" ng-change="redraw()"
-              - months.each do |m|
-                option #{m}
-          .col-sm-2
-            label.control-label
-              | to
-          .col-sm-5
-            select.form-control ng-model="endMonth" ng-change="redraw()"
-              - months.each do |m|
-                option #{m}
-
     .row
       .col-sm-9
-        .box.graph
+        .box
+          .date-select.clearfix
+            .date-range-title.col-sm-8
+              h2 
+                | {{ startDate || "01/01/2010" }}
+                | &nbsp;-&nbsp;
+                | {{ endDate || "01/01/2014" }}
+            .select-box.square.col-sm-4
+              label class="control-label" Select a date range:
+              .row
+                .col-sm-6
+                  input type="text" class="auto-kal form-control" placeholder="from date" ng-model="startDate" ng-change="redraw()"
+                .col-sm-6
+                  input type="text" class="auto-kal form-control" placeholder="to date" ng-model="endDate" ng-change="redraw()"
+          .graph
       .col-sm-3
         .box.info-section
+
           .stat
             label.info-title Average hours Sleep:
             h4.hours-slept
-              | {{ averageSleep }}
+              | {{ averageSleep || 0 }}
           .stat
             label.info-title Average Mood:
             .mood-level
@@ -50,3 +44,4 @@ body ng-controller="moodSleepController"
   script src="vendor/javascripts/angular/angular.js"
   script src="vendor/javascripts/d3/d3.v3.js"
   script src="javascripts/ginsberg_app.js"
+  script src="vendor/javascripts/kalendae/kalendae.standalone.js"

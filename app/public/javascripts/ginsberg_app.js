@@ -62,10 +62,10 @@
   };
 
   margin = {
-    top: 80,
+    top: 20,
     right: 20,
-    bottom: 30,
-    left: 80
+    bottom: 40,
+    left: 40
   };
 
   width = 800 - margin.left - margin.right;

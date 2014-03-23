@@ -1,0 +1,95 @@
+@import 'variables'
+
+.kalendae
+  text-align: center
+  max-width: 245px
+  .k-header span,
+  .k-days span,
+  .option
+    width: 35px
+  &.strip
+    span
+      min-width: 45px
+      display: inline-block
+      outline: solid 1px #EfEEEE
+      background-color: white
+      &.option
+        outline: solid 2px #EfEEEE
+  th,
+  .k-title
+    background-color: #D0D0D0
+    font-weight: bold
+    color: #444
+  .k-header
+    color: #666666
+    border-bottom: solid #D0D0D0 4px
+    span
+      background-color: #DDD
+  .k-btn-previous-month,
+  .k-btn-next-month
+    font-family: FontAwesome
+    font-style: normal
+    font-weight: normal
+    line-height: 1
+    -webkit-font-smoothing: antialiased
+    -moz-osx-font-smoothing: grayscale
+    float: right
+    padding: 7px 15px
+    color: $ginsbergBlue
+    &:hover
+      text-decoration: none
+      color: lighten($ginsbergBlue, 10%)
+    &:active
+      color: darken($ginsbergBlue, 10%)
+    &:before
+      content: "\f061"
+  .k-btn-previous-month
+    float: left
+    &:before
+      content: "\f060"
+  .k-caption
+    margin: 5px auto
+    display: inline-block
+  .k-calendar
+    background-color: lighten($ginsbergBlue, 37%)
+  .k-header span,
+  .k-days span
+    display: inline-block 
+  .k-header span,
+  .k-days span,
+  .option
+    padding: 8px
+    outline: solid 1px #EfEEEE
+  .k-active,
+  .option
+    background-color: white
+    cursor: pointer
+    &:hover
+      background-color: lighten($ginsbergBlue, 25%)
+  .k-out-of-month
+    background-color: #DDD
+    color: #AAA
+    &:hover
+      background-color: #EEE !important
+      cursor: default 
+  .k-today,
+  .option.existing
+    background-color: lighten($ginsbergBlue, 30%)
+    &:hover
+      background-color: lighten($ginsbergBlue, 25%) !important
+  .k-selected,
+  .option.selected
+    background-color: $ginsbergGreen
+    color: white
+    &.k-out-of-month
+      background-color: lighten($ginsbergGreen, 5%)
+    &:hover
+      background-color: lighten($ginsbergBlue, 5%) !important
+  .k-range
+    background-color: lighten($ginsbergGreen, 25%)
+    color: white
+    &.k-out-of-month
+      background-color: lighten($ginsbergGreen, 35%)
+
+  
+
