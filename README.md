@@ -7,5 +7,5 @@ The project uses the angular.js framework and the D3 graphic library. It is serv
 
 **A Demo can be found at: [ginsberg.developmentdomain.com][2]**
 
-[1][http://project-ginsberg.com/]
-[2][http://ginsberg.developmentdomain.com/]
+[http://project-ginsberg.com/]
+[http://ginsberg.developmentdomain.com/]
