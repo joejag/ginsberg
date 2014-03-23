@@ -5,34 +5,38 @@ ginsbergApp.config ['$httpProvider', ($httpProvider) ->
 ]
 
 ginsbergApp.controller "moodSleepController", ($scope, $http) ->
-  $http.get('http://localhost:4567/sleep/2010-11-20/2014-01-20/').success (data) ->
-    sleepData = []
-    moodSleepData = []
-    data.forEach (s) ->
-      if isValidDate(new Date(s.timestamp))
-        obj = {}
-        hourless_date = new Date(s.timestamp).setHours(0,0,0,0)
-        obj.date = hourless_date
-        obj.total_sleep = s.total_sleep
-        sleepData.push obj
-    $http.get('http://localhost:4567/mood/2010-11-20/2014-01-20/').success (data) ->
-      data.forEach (m) ->
-        if isValidDate(new Date(m.timestamp))
-          hourless_date = new Date(m.timestamp).setHours(0,0,0,0)
-          obj = _.findWhere sleepData, {date: hourless_date}
-          if obj
-            obj.mood = m.value
-            moodSleepData.push obj
-
-      $scope.moodSleepData = moodSleepData
-
-      $scope.redraw = ->
+  $scope.startDate = $scope.startDate || "05/01/2013" 
+  $scope.endDate = $scope.endDate || "01/01/2014" 
+  $scope.changedDate = ->
+    from = new Date($scope.startDate).toISOString().slice(0,10) #to YYYY-MM-DD
+    to = new Date($scope.endDate).toISOString().slice(0,10) #to YYYY-MM-DD
+    $http.get("http://localhost:4567/sleep/"+from+"/"+to+"/").success (data) ->
+      sleepData = []
+      moodSleepData = []
+      data.forEach (s) ->
+        if isValidDate(new Date(s.timestamp))
+          obj = {}
+          hourless_date = new Date(s.timestamp).setHours(0,0,0,0)
+          obj.date = hourless_date
+          obj.total_sleep = s.total_sleep
+          sleepData.push obj
+      $http.get("http://localhost:4567/mood/"+from+"/"+to+"/").success (data) ->
+        data.forEach (m) ->
+          if isValidDate(new Date(m.timestamp))
+            hourless_date = new Date(m.timestamp).setHours(0,0,0,0)
+            obj = _.findWhere sleepData, {date: hourless_date}
+            if obj
+              obj.mood = m.value
+              moodSleepData.push obj
+        $scope.moodSleepData = moodSleepData
         drawGraph(moodSleepData) 
         $scope.averageSleep = getAverageSleep(moodSleepData)
         height = ((350/250) * getAverageMood(moodSleepData))
         $scope.moodStyle = {
           top:  height+"px"
         }
+
+  $scope.changedDate()
 
 isValidDate = (d) ->
   if Object.prototype.toString.call(d) != "[object Date]"

@@ -12,46 +12,52 @@
   ]);
 
   ginsbergApp.controller("moodSleepController", function($scope, $http) {
-    return $http.get('http://localhost:4567/sleep/2010-11-20/2014-01-20/').success(function(data) {
-      var moodSleepData, sleepData;
-      sleepData = [];
-      moodSleepData = [];
-      data.forEach(function(s) {
-        var hourless_date, obj;
-        if (isValidDate(new Date(s.timestamp))) {
-          obj = {};
-          hourless_date = new Date(s.timestamp).setHours(0, 0, 0, 0);
-          obj.date = hourless_date;
-          obj.total_sleep = s.total_sleep;
-          return sleepData.push(obj);
-        }
-      });
-      return $http.get('http://localhost:4567/mood/2010-11-20/2014-01-20/').success(function(data) {
-        data.forEach(function(m) {
+    $scope.startDate = $scope.startDate || "05/01/2013";
+    $scope.endDate = $scope.endDate || "01/01/2014";
+    $scope.changedDate = function() {
+      var from, to;
+      from = new Date($scope.startDate).toISOString().slice(0, 10);
+      to = new Date($scope.endDate).toISOString().slice(0, 10);
+      return $http.get("http://localhost:4567/sleep/" + from + "/" + to + "/").success(function(data) {
+        var moodSleepData, sleepData;
+        sleepData = [];
+        moodSleepData = [];
+        data.forEach(function(s) {
           var hourless_date, obj;
-          if (isValidDate(new Date(m.timestamp))) {
-            hourless_date = new Date(m.timestamp).setHours(0, 0, 0, 0);
-            obj = _.findWhere(sleepData, {
-              date: hourless_date
-            });
-            if (obj) {
-              obj.mood = m.value;
-              return moodSleepData.push(obj);
-            }
+          if (isValidDate(new Date(s.timestamp))) {
+            obj = {};
+            hourless_date = new Date(s.timestamp).setHours(0, 0, 0, 0);
+            obj.date = hourless_date;
+            obj.total_sleep = s.total_sleep;
+            return sleepData.push(obj);
           }
         });
-        $scope.moodSleepData = moodSleepData;
-        return $scope.redraw = function() {
+        return $http.get("http://localhost:4567/mood/" + from + "/" + to + "/").success(function(data) {
           var height;
+          data.forEach(function(m) {
+            var hourless_date, obj;
+            if (isValidDate(new Date(m.timestamp))) {
+              hourless_date = new Date(m.timestamp).setHours(0, 0, 0, 0);
+              obj = _.findWhere(sleepData, {
+                date: hourless_date
+              });
+              if (obj) {
+                obj.mood = m.value;
+                return moodSleepData.push(obj);
+              }
+            }
+          });
+          $scope.moodSleepData = moodSleepData;
           drawGraph(moodSleepData);
           $scope.averageSleep = getAverageSleep(moodSleepData);
           height = (350 / 250) * getAverageMood(moodSleepData);
           return $scope.moodStyle = {
             top: height + "px"
           };
-        };
+        });
       });
-    });
+    };
+    return $scope.changedDate();
   });
 
   isValidDate = function(d) {

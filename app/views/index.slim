@@ -21,16 +21,16 @@ body ng-controller="moodSleepController"
           .date-select.clearfix
             .title.col-sm-8
               h2 
-                | {{ startDate || "01/01/2010" }}
+                | {{ startDate }}
                 | &nbsp;-&nbsp;
-                | {{ endDate || "01/01/2014" }}
+                | {{ endDate }}
             .select-box.square.col-sm-4
               label class="control-label" Select a date range:
               .row
                 .col-sm-6
-                  input type="text" class="auto-kal form-control" placeholder="from date" ng-model="startDate" ng-change="redraw()"
+                  input type="text" class="auto-kal form-control" placeholder="from date" ng-model="startDate" ng-change="changedDate()"
                 .col-sm-6
-                  input type="text" class="auto-kal form-control" placeholder="to date" ng-model="endDate" ng-change="redraw()"
+                  input type="text" class="auto-kal form-control" placeholder="to date" ng-model="endDate" ng-change="changedDate()"
           .graph
       .col-sm-3
         .box.info-section
@@ -38,7 +38,7 @@ body ng-controller="moodSleepController"
           .stat
             label.info-title Average hours Sleep:
             h4.hours-slept
-              | {{ averageSleep || 0 }}
+              | {{ averageSleep || "?" }}
           .stat
             label.info-title Average Mood:
             .mood-level
