@@ -5,32 +5,60 @@ ginsbergApp.config ['$httpProvider', ($httpProvider) ->
 ]
 
 ginsbergApp.controller "moodSleepController", ($scope, $http) ->
-  $scope.startDate = $scope.startDate || "05/01/2013" 
-  $scope.endDate = $scope.endDate || "01/01/2014" 
+
+  $scope.startDate = $scope.startDate || "May 1 2013" 
+  $scope.endDate = $scope.endDate || "March 1 2014" 
+
+
+  # TO DO - move this logic out - perhaps into the proxy server 
+  # so that app is served clean, ordered json without having to
+  # crudely bash it into shape. Doing data manipulation on the server means
+  # only one get request to the proxy is neccessary.
   $scope.changedDate = ->
+    # start and end dates for REST call
     from = new Date($scope.startDate).toISOString().slice(0,10) #to YYYY-MM-DD
     to = new Date($scope.endDate).toISOString().slice(0,10) #to YYYY-MM-DD
+
+    # call to sinatra proxy to access the REST API for sleep data
     $http.get("http://localhost:4567/sleep/"+from+"/"+to+"/").success (data) ->
       sleepData = []
-      moodSleepData = []
       data.forEach (s) ->
-        if isValidDate(new Date(s.timestamp))
-          obj = {}
-          hourless_date = new Date(s.timestamp).setHours(0,0,0,0)
-          obj.date = hourless_date
-          obj.total_sleep = s.total_sleep
-          sleepData.push obj
+        timestampDate = new Date(s.timestamp)
+        hourless_date = dateToHourlessTime(timestampDate)
+        sleepObj = {}
+        sleepObj.date = hourless_date
+        sleepObj.sleep = s.total_sleep
+        sleepData.push sleepObj
+
+      # call to sinatra proxy to access the REST API for mood data
       $http.get("http://localhost:4567/mood/"+from+"/"+to+"/").success (data) ->
-        data.forEach (m) ->
-          if isValidDate(new Date(m.timestamp))
-            hourless_date = new Date(m.timestamp).setHours(0,0,0,0)
-            obj = _.findWhere sleepData, {date: hourless_date}
-            if obj
-              obj.mood = m.value
-              moodSleepData.push obj
+        moodSleepData = []
+        data = data.forEach (m) ->
+          timestampDate = new Date(m.timestamp)
+          hourless_date = dateToHourlessTime(timestampDate)
+          
+          # Attempt to merge data - results in an array of objects where both sleep data
+          # and mood data were both available (hence sparce final data points) 
+          # see note above about moving this to the proxy server
+
+          # find first matching sleepData object - ignore any others with matching dates
+          matchingSleepDate = _.findWhere sleepData, {date: hourless_date}
+          obj = _.findWhere moodSleepData, {date: hourless_date}
+          if matchingSleepDate and !obj
+            moodSleepObj = {}
+            moodSleepObj.sleep = matchingSleepDate.sleep
+            moodSleepObj.mood = m.value
+            moodSleepObj.date = hourless_date 
+            moodSleepData.push moodSleepObj
+
         $scope.moodSleepData = moodSleepData
-        drawGraph(moodSleepData) 
+
         $scope.averageSleep = getAverageSleep(moodSleepData)
+
+        drawGraph(moodSleepData)
+
+        # set mood scale
+        # height of the mood scale = 350px divided by max mood score times avg mood
         height = ((350/250) * getAverageMood(moodSleepData))
         $scope.moodStyle = {
           top:  height+"px"
@@ -43,7 +71,14 @@ isValidDate = (d) ->
     return false
   !isNaN(d.getTime())
         
-# based partially on http://bl.ocks.org/mbostock/3969722
+dateToHourlessTime = (d) ->
+  if isValidDate(d)
+    target  = new Date(d.valueOf())
+    target.setHours(0,0,0,0)
+    target.getTime()
+ 
+
+# graph partially based on http://bl.ocks.org/mbostock/3969722
 margin =
   top: 20 
   right: 20
@@ -69,12 +104,12 @@ yAxis = d3.svg.axis().scale(y).orient("left")
 line = d3.svg.line().interpolate("linear").x((d) ->
   x new Date d.key
 ).y((d) ->
-  y d.values.total_sleep
+  y d.values.sleep
 )
 
 
 color = d3.scale.log()
-  .range(["#DAF9A5", "#447B80"])
+  .range(["#B8D782", "#5CB6BE"])
   .interpolate(d3.interpolateHsl)
   .domain [1, 250]
 
@@ -82,20 +117,18 @@ drawGraph = (moodSleepData) ->
   d3.select(".graph svg").remove()
   svg = d3.select(".graph").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-  moodSleepData.forEach (d) ->
-    d.date = new Date d.date 
-    d.sleep = d.total_sleep/60
   moodSleepData  = moodSleepData.sort (a, b) ->
     a.date - b.date
+
   moodSleepData = d3.nest()
     .key((d) ->
       new Date d.date 
     )
     .rollup( (leaves) ->
-        total_sleep: d3.sum(leaves, (d) ->
-          d.sleep
+        sleep: d3.sum(leaves, (d) ->
+          d.sleep/60
         )/leaves.length
-        total_mood: d3.sum(leaves, (d) ->
+        mood: d3.sum(leaves, (d) ->
           d.mood
         )/leaves.length
         
@@ -107,7 +140,7 @@ drawGraph = (moodSleepData) ->
   x.domain d3.extent data, (d) ->
     new Date d.key
   y.domain d3.extent data, (d) ->
-    d.values.total_sleep
+    d.values.sleep
  
   svg.append("linearGradient")
     .attr("id", "sleep-gradient")
@@ -166,16 +199,16 @@ drawGraph = (moodSleepData) ->
     .attr "cx", (d) ->
       x( new Date d.key )
     .attr "cy", (d) ->
-      y( d.values.total_sleep )
+      y( d.values.sleep )
     .style "fill", (d) ->
-      color(d.values.total_mood)
+      color(d.values.mood)
 
   return
 
 getAverageSleep = (moodSleepData) ->
   sleeps = []
   moodSleepData.forEach (d) ->
-    sleeps.push d.total_sleep/60
+    sleeps.push d.sleep/60
   sum = _.reduce(sleeps, (memo, num) ->
     memo + num
   ,0)

@@ -1,5 +1,5 @@
 (function() {
-  var color, drawGraph, getAverageMood, getAverageSleep, ginsbergApp, height, isValidDate, line, margin, width, x, xAxis, y, yAxis;
+  var color, dateToHourlessTime, drawGraph, getAverageMood, getAverageSleep, ginsbergApp, height, isValidDate, line, margin, width, x, xAxis, y, yAxis;
 
   ginsbergApp = angular.module('ginsbergApp', []);
 
@@ -12,44 +12,48 @@
   ]);
 
   ginsbergApp.controller("moodSleepController", function($scope, $http) {
-    $scope.startDate = $scope.startDate || "05/01/2013";
-    $scope.endDate = $scope.endDate || "01/01/2014";
+    $scope.startDate = $scope.startDate || "May 1 2013";
+    $scope.endDate = $scope.endDate || "March 1 2014";
     $scope.changedDate = function() {
       var from, to;
       from = new Date($scope.startDate).toISOString().slice(0, 10);
       to = new Date($scope.endDate).toISOString().slice(0, 10);
       return $http.get("http://localhost:4567/sleep/" + from + "/" + to + "/").success(function(data) {
-        var moodSleepData, sleepData;
+        var sleepData;
         sleepData = [];
-        moodSleepData = [];
         data.forEach(function(s) {
-          var hourless_date, obj;
-          if (isValidDate(new Date(s.timestamp))) {
-            obj = {};
-            hourless_date = new Date(s.timestamp).setHours(0, 0, 0, 0);
-            obj.date = hourless_date;
-            obj.total_sleep = s.total_sleep;
-            return sleepData.push(obj);
-          }
+          var hourless_date, sleepObj, timestampDate;
+          timestampDate = new Date(s.timestamp);
+          hourless_date = dateToHourlessTime(timestampDate);
+          sleepObj = {};
+          sleepObj.date = hourless_date;
+          sleepObj.sleep = s.total_sleep;
+          return sleepData.push(sleepObj);
         });
         return $http.get("http://localhost:4567/mood/" + from + "/" + to + "/").success(function(data) {
-          var height;
-          data.forEach(function(m) {
-            var hourless_date, obj;
-            if (isValidDate(new Date(m.timestamp))) {
-              hourless_date = new Date(m.timestamp).setHours(0, 0, 0, 0);
-              obj = _.findWhere(sleepData, {
-                date: hourless_date
-              });
-              if (obj) {
-                obj.mood = m.value;
-                return moodSleepData.push(obj);
-              }
+          var height, moodSleepData;
+          moodSleepData = [];
+          data = data.forEach(function(m) {
+            var hourless_date, matchingSleepDate, moodSleepObj, obj, timestampDate;
+            timestampDate = new Date(m.timestamp);
+            hourless_date = dateToHourlessTime(timestampDate);
+            matchingSleepDate = _.findWhere(sleepData, {
+              date: hourless_date
+            });
+            obj = _.findWhere(moodSleepData, {
+              date: hourless_date
+            });
+            if (matchingSleepDate && !obj) {
+              moodSleepObj = {};
+              moodSleepObj.sleep = matchingSleepDate.sleep;
+              moodSleepObj.mood = m.value;
+              moodSleepObj.date = hourless_date;
+              return moodSleepData.push(moodSleepObj);
             }
           });
           $scope.moodSleepData = moodSleepData;
-          drawGraph(moodSleepData);
           $scope.averageSleep = getAverageSleep(moodSleepData);
+          drawGraph(moodSleepData);
           height = (350 / 250) * getAverageMood(moodSleepData);
           return $scope.moodStyle = {
             top: height + "px"
@@ -65,6 +69,15 @@
       return false;
     }
     return !isNaN(d.getTime());
+  };
+
+  dateToHourlessTime = function(d) {
+    var target;
+    if (isValidDate(d)) {
+      target = new Date(d.valueOf());
+      target.setHours(0, 0, 0, 0);
+      return target.getTime();
+    }
   };
 
   margin = {
@@ -89,19 +102,15 @@
   line = d3.svg.line().interpolate("linear").x(function(d) {
     return x(new Date(d.key));
   }).y(function(d) {
-    return y(d.values.total_sleep);
+    return y(d.values.sleep);
   });
 
-  color = d3.scale.log().range(["#DAF9A5", "#447B80"]).interpolate(d3.interpolateHsl).domain([1, 250]);
+  color = d3.scale.log().range(["#B8D782", "#5CB6BE"]).interpolate(d3.interpolateHsl).domain([1, 250]);
 
   drawGraph = function(moodSleepData) {
     var data, svg;
     d3.select(".graph svg").remove();
     svg = d3.select(".graph").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    moodSleepData.forEach(function(d) {
-      d.date = new Date(d.date);
-      return d.sleep = d.total_sleep / 60;
-    });
     moodSleepData = moodSleepData.sort(function(a, b) {
       return a.date - b.date;
     });
@@ -109,10 +118,10 @@
       return new Date(d.date);
     }).rollup(function(leaves) {
       return {
-        total_sleep: d3.sum(leaves, function(d) {
-          return d.sleep;
+        sleep: d3.sum(leaves, function(d) {
+          return d.sleep / 60;
         }) / leaves.length,
-        total_mood: d3.sum(leaves, function(d) {
+        mood: d3.sum(leaves, function(d) {
           return d.mood;
         }) / leaves.length
       };
@@ -122,7 +131,7 @@
       return new Date(d.key);
     }));
     y.domain(d3.extent(data, function(d) {
-      return d.values.total_sleep;
+      return d.values.sleep;
     }));
     svg.append("linearGradient").attr("id", "sleep-gradient").attr("gradientUnits", "userSpaceOnUse").attr("x1", 0).attr("y1", y(4)).attr("x2", 0).attr("y2", y(8)).selectAll("stop").data([
       {
@@ -146,9 +155,9 @@
     svg.selectAll(".dot").data(data).enter().append("circle").attr("class", "dot").attr("r", 8).attr("cx", function(d) {
       return x(new Date(d.key));
     }).attr("cy", function(d) {
-      return y(d.values.total_sleep);
+      return y(d.values.sleep);
     }).style("fill", function(d) {
-      return color(d.values.total_mood);
+      return color(d.values.mood);
     });
   };
 
@@ -156,7 +165,7 @@
     var average, sleeps, sum;
     sleeps = [];
     moodSleepData.forEach(function(d) {
-      return sleeps.push(d.total_sleep / 60);
+      return sleeps.push(d.sleep / 60);
     });
     sum = _.reduce(sleeps, function(memo, num) {
       return memo + num;

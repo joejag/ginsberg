@@ -13,18 +13,19 @@ body {
   color: #4e5758; }
 
 .date-select {
-  padding: 20px 0 10px 0; }
+  padding: 25px 0 10px 0; }
 
 .description {
   color: #4e5758; }
   .description h1 {
-    margin-top: 0; }
+    margin-top: 0;
+    font-size: 3em; }
 
 .title {
   color: #4e5758; }
   .title h2 {
     margin: 0;
-    font-size: 3em; }
+    font-size: 2.4em; }
 
 .form-group.date-range {
   margin-bottom: 0; }
