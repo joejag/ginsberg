@@ -7,7 +7,7 @@ head
   link rel="stylesheet" href="stylesheets/application.css"
   link rel="stylesheet" href="stylesheets/graph.css"
 
-body ng-controller="SleepDataController"
+body ng-controller="moodSleepController"
   .main.container
     .graph-header.row
       .col-sm-9
@@ -20,14 +20,14 @@ body ng-controller="SleepDataController"
         .form-group.date-range
           - months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
           .col-sm-5
-            select.form-control ng-model="startMonth" value="May"
+            select.form-control ng-model="startMonth" ng-change="redraw()"
               - months.each do |m|
                 option #{m}
           .col-sm-2
             label.control-label
               | to
           .col-sm-5
-            select.form-control ng-model="endMonth" value="June"
+            select.form-control ng-model="endMonth" ng-change="redraw()"
               - months.each do |m|
                 option #{m}
 
@@ -38,14 +38,15 @@ body ng-controller="SleepDataController"
         .box.info-section
           .stat
             label.info-title Average hours Sleep:
-            h4.hours-slept 8
+            h4.hours-slept
+              | {{ averageSleep }}
           .stat
             label.info-title Average Mood:
             .mood-level
               .green-to-blue-grad
-              .indicator
+              .indicator ng-style="moodStyle"
 
+  script src="vendor/javascripts/underscore/underscore.js"
   script src="vendor/javascripts/angular/angular.js"
-  script src="javascripts/ginsberg_app.js"
   script src="vendor/javascripts/d3/d3.v3.js"
-  script src="javascripts/graph.js"
+  script src="javascripts/ginsberg_app.js"
