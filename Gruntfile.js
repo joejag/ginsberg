@@ -3,7 +3,7 @@ module.exports = function(grunt) {
     slim: {
       all: {
         expand: true,
-        cwd: 'app/slim',
+        cwd: 'app/views',
         src: ['{,*/}*.slim'],
         dest: 'app',
         ext: '.html'
@@ -13,38 +13,38 @@ module.exports = function(grunt) {
       all: {
         expand: true,
         flatten: true,
-        cwd: 'app/javascripts/coffee',
+        cwd: 'app/assets/javascripts/coffee',
         src: ['*.coffee'],
-        dest: 'app/javascripts',
+        dest: 'app/public/javascripts',
         ext: '.js'
       }
     },
     sass: {
       all: {
         expand: true,
-        cwd: 'app/stylesheets/sass',
+        cwd: 'app/assets/stylesheets/sass',
         src: ['*.sass'],
-        dest: 'app/stylesheets',
+        dest: 'app/public/stylesheets',
         ext: '.css'
       }
     },
     watch: {
       slim: {
-        files: ['app/slim/*.slim'],
+        files: ['app/views/*.slim'],
         tasks: ['slim'],
         options: {
           debounceDelay: 250,
         },
       },
       coffee: {
-        files: ['app/javascripts/**/*.coffee'],
+        files: ['app/assets/**/*.coffee'],
         tasks: ['coffee'],
         options: {
           debounceDelay: 250,
         },
       },
       sass: {
-        files: ['app/stylesheets/**/*.sass'],
+        files: ['app/assets/**/*.sass'],
         tasks: ['sass'],
         options: {
           debounceDelay: 250,
